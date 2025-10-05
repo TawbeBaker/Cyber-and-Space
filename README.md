@@ -220,7 +220,8 @@ git checkout main
 
 ### Code
 - **Luis**: Visualisation orbitale avancée, mécanique Kepler, dataset 200 asteroids
-- **Repo Luis**: https://github.com/TawbeBaker/Cyber-and-Space/tree/main/Hackathon
+- **Application Live**: https://meteormadness.earth
+- **Code Source**: https://github.com/TawbeBaker/Cyber-and-Space
 
 ### APIs & Données
 - **NASA JPL**: Small-Body Database (SBDB)
