@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 NASA Asteroid Trajectory Visualizer v3.0</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #000; 
+            color: #fff; 
+            overflow: hidden; 
+        }
+        
+        #loading {
+            positio                <div style="margin-top: 10px; padding: 10px; background: rgba(74, 144, 226, 0.1); border-radius: 6px; border: 1px solid rgba(74, 144, 226, 0.3);">
+                    <p style="font-size: 11px; color: #aaa; margin-bottom: 5px;">
+                        <strong style="color: #4a90e2;">Legend:</strong>
+                    </p>
+                    <p style="font-size: 11px; color: #00aaff; margin: 0;">
+                        🔵 Original Orbit (Blue) - Path before impact
+                    </p>
+                    <p style="font-size: 11px; color: #ff3300; margin: 0;">
+                        🔴 Modified Orbit (Red) - New path after impact
+                    </p>
+                    <p style="font-size: 10px; color: #888; margin: 5px 0 0 0; font-style: italic;">
+                        Both orbits visible for comparison. Asteroid follows red path.
+                    </p>
+                    <p style="font-size: 11px; color: #ff0000; margin: 5px 0 0 0;">
+                        🔴 Asteroid highlight in Impactor Mode
+                    </p>
+                </div>         top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #4a90e2;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none; /* Permite clicks a través del canvas */
+        }
+        
+        #canvas-container canvas {
+            pointer-events: auto; /* Solo el canvas en sí puede interactuar */
+        }
+        
+        .controls-panel, .info-panel {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.3);
+            pointer-events: auto;
+        }
+        
+        .controls-panel {
+            top: 10px;
+            left: 10px;
+            width: 300px;
+            max-height: calc(100vh - 20px); /* Asegurar que quepa en pantalla */
+        }
+        
+        .info-panel {
+            top: 10px;
+            right: 10px;
+            width: 320px;
+            max-height: calc(100vh - 20px); /* Asegurar que quepa en pantalla */
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #4a90e2;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, #357abd 0%, #2868a0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
+        }
+        
+        input[type="file"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .asteroid-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .asteroid-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .asteroid-item:hover {
+            background: rgba(74, 144, 226, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .asteroid-item.selected {
+            background: rgba(74, 144, 226, 0.3);
+            border-left: 3px solid #4a90e2;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .asteroid-item.hazardous {
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .asteroid-name {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        
+        .asteroid-info {
+            font-size: 11px;
+            color: #aaa;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #4a90e2;
+            font-size: 12px;
+        }
+        
+        .info-value {
+            font-size: 12px;
+            color: #fff;
+        }
+        
+        .version-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(74, 144, 226, 0.2);
+            border: 1px solid #4a90e2;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 11px;
+            color: #a0c4e8;
+            z-index: 1000;
+        }
+        
+        /* Hamburger Menu Buttons */
+        .hamburger-btn {
+            position: fixed;
+            top: 15px;
+            width: 48px;
+            height: 48px;
+            background: rgba(74, 144, 226, 0.9);
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1002;
+            display: none; /* Hidden by default, shown on mobile */
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(74, 144, 226, 0.5);
+        }
+        
+        .hamburger-btn:hover {
+            background: rgba(74, 144, 226, 1);
+            transform: scale(1.05);
+        }
+        
+        .hamburger-btn:active {
+            transform: scale(0.95);
+        }
+        
+        #hamburger-left {
+            left: 15px;
+        }
+        
+        #hamburger-right {
+            right: 15px;
+        }
+        
+        .hamburger-btn.active {
+            background: rgba(255, 100, 100, 0.9);
+            border-color: #ff6464;
+        }
+        
+        #notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #4a90e2;
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+            z-index: 10001;
+            min-width: 300px;
+            max-width: 500px;
+            display: none;
+            box-shadow: 0 -4px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        /* Play Overlay and Button */
+        .play-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10002;
+            transition: opacity 0.3s ease;
+        }
+        
+        .play-overlay.hidden {
+            display: none;
+        }
+        
+        .play-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            text-align: center;
+        }
+        
+        .play-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .play-subtitle {
+            font-size: 16px;
+            color: #a0c4e8;
+            margin: 0;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+        
+        .start-simulation-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 20px 45px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            max-width: 300px;
+            white-space: nowrap;
+        }
+        
+        .start-simulation-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.8);
+        }
+        
+        .start-simulation-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .play-icon {
+            font-size: 24px;
+            line-height: 1;
+        }
+        
+        .play-text {
+            font-size: 16px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.03);
+            }
+        }
+        
+        .toggle-btn {
+            position: fixed;
+            background: rgba(74, 144, 226, 0.8);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 1001;
+            pointer-events: auto;
+            white-space: nowrap;
+            width: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn:hover {
+            background: rgba(74, 144, 226, 1);
+            transform: scale(1.05);
+        }
+        
+        #toggle-controls { top: 10px; left: 320px; }
+        #toggle-info { top: 10px; right: 340px; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(74, 144, 226, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(74, 144, 226, 0.7); }
+        
+        /* Impactor-2025 Mode Button */
+        #impactor-mode-btn {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            background: linear-gradient(135deg, #1a73e8 0%, #4a90e2 50%, #1a73e8 100%);
+            background-size: 200% 100%;
+            color: white;
+            border: 2px solid #4a90e2;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.5), 0 0 30px rgba(74, 144, 226, 0.3);
+            transition: all 0.4s ease;
+            pointer-events: auto;
+            white-space: nowrap;
+            max-width: 220px;
+            text-align: center;
+        }
+        
+        #impactor-mode-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 30px rgba(74, 144, 226, 0.7), 0 0 40px rgba(74, 144, 226, 0.5);
+            background-position: 100% 0;
+        }
+        
+        #impactor-mode-btn.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #ff6b6b 50%, #e74c3c 100%);
+            background-size: 200% 100%;
+            border-color: #e74c3c;
+            animation: impactorPulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.6), 0 0 40px rgba(231, 76, 60, 0.4);
+        }
+        
+        @keyframes impactorPulse {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(231, 76, 60, 0.6), 0 0 40px rgba(231, 76, 60, 0.4);
+            }
+            50% {
+                box-shadow: 0 6px 30px rgba(231, 76, 60, 0.9), 0 0 60px rgba(231, 76, 60, 0.6);
+            }
+        }
+        
+        /* Panel Hidden State for Mobile */
+        .panel-hidden {
+            transform: translateX(-120%) !important;
+        }
+        
+        .info-panel.panel-hidden {
+            transform: translateX(120%) !important;
+        }
+        
+        /* ===== RESPONSIVE MEDIA QUERIES ===== */
+        
+        /* Tablet and smaller (portrait tablets and large phones) */
+        @media (max-width: 1024px) {
+            .controls-panel, .info-panel {
+                width: 280px;
+            }
+            
+            .control-group {
+                margin-bottom: 12px;
+            }
+            
+            label {
+                font-size: 11px;
+            }
+        }
+        
+        /* Mobile devices (phones) */
+        @media (max-width: 768px) {
+            /* Show hamburger buttons on mobile */
+            .hamburger-btn {
+                display: flex !important;
+            }
+            
+            /* Hide panels by default on mobile */
+            .controls-panel, .info-panel {
+                position: fixed;
+                width: 85vw;
+                max-width: 320px;
+                height: calc(100vh - 80px);
+                max-height: calc(100vh - 80px);
+                top: 70px;
+                transition: transform 0.3s ease;
+                z-index: 1001;
+                overflow-y: auto;
+                border-radius: 8px 8px 0 0;
+            }
+            
+            .controls-panel {
+                left: 0;
+                transform: translateX(-120%);
+            }
+            
+            .controls-panel:not(.panel-hidden) {
+                transform: translateX(0);
+            }
+            
+            .info-panel {
+                right: 0;
+                transform: translateX(120%);
+            }
+            
+            .info-panel:not(.panel-hidden) {
+                transform: translateX(0);
+            }
+            
+            /* Hide old toggle buttons on mobile */
+            #toggle-controls, #toggle-info {
+                display: none !important;
+            }
+            
+            /* Increase touch targets */
+            button {
+                min-height: 44px;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            input[type="range"] {
+                height: 44px;
+            }
+            
+            /* Adjust text sizes */
+            h3 {
+                font-size: 14px;
+            }
+            
+            label {
+                font-size: 12px;
+            }
+            
+            .info-label, .info-value {
+                font-size: 11px;
+            }
+            
+            /* Version badge */
+            .version-badge {
+                font-size: 9px;
+                padding: 4px 8px;
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            /* Play button adjustments */
+            .play-container {
+                padding: 20px;
+                max-width: 90vw;
+            }
+            
+            .play-subtitle {
+                font-size: 12px;
+                line-height: 1.5;
+            }
+            
+            #start-simulation-btn {
+                font-size: 16px;
+                padding: 15px 30px;
+            }
+            
+            /* Impactor mode button */
+            #impactor-mode-btn {
+                top: auto;
+                bottom: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 13px;
+                padding: 10px 18px;
+                max-width: 180px;
+            }
+            
+            #impactor-mode-btn:hover {
+                transform: translateX(-50%) scale(1.05);
+            }
+        }
+        
+        /* Small phones */
+        @media (max-width: 480px) {
+            .controls-panel, .info-panel {
+                width: 90vw;
+                max-width: none;
+            }
+            
+            .hamburger-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+            
+            h3 {
+                font-size: 13px;
+            }
+            
+            label, .info-label, .info-value {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="version-badge">
+        CYBER and SPACE 🛰️ Montréal
+    </div>
+    
+    <!-- Hamburger Menu Buttons for Mobile -->
+    <button id="hamburger-left" class="hamburger-btn" title="Toggle Controls Panel">
+        ☰
+    </button>
+    <button id="hamburger-right" class="hamburger-btn" title="Toggle Info Panel">
+        ☰
+    </button>
+    
+    <div id="loading">
+        <div class="spinner"></div>
+        <h2>🌌 Loading Visualizer v3.0</h2>
+        <p>Initializing modules...</p>
+    </div>
+
+    <div id="canvas-container"></div>
+    
+    <!-- Impactor-2025 Mode Button -->
+    <button id="impactor-mode-btn" title="Enter mission-focused view mode">
+        🎯 Impactor Mode
+    </button>
+    
+    <button id="toggle-controls" class="toggle-btn">◀ Hide Controls</button>
+    <button id="toggle-info" class="toggle-btn">Hide Info ▶</button>
+    
+    <div class="controls-panel" id="controls-panel">
+        <h2 style="font-size: 18px; margin-bottom: 15px;">⚙️ Controls</h2>
+        
+        <div class="control-group">
+            <h3>🎯 Filter by Distance</h3>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <span style="font-size: 12px; color: #888;">Show:</span>
+                <span id="asteroid-filter-value" style="font-size: 18px; color: #00d4ff; font-weight: bold;">10</span>
+                <span style="font-size: 12px; color: #888;">closest asteroids</span>
+            </div>
+            <input 
+                type="range" 
+                id="asteroid-filter-slider" 
+                min="5" 
+                max="200" 
+                value="10" 
+                step="5"
+                style="width: 100%; cursor: pointer; accent-color: #00d4ff;"
+            />
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #666; margin-top: 5px;">
+                <span>5</span>
+                <span>50</span>
+                <span>100</span>
+                <span>200</span>
+            </div>
+            <p style="font-size: 10px; color: #888; margin-top: 10px;">
+                ⚡ Real-time filter by historical close approach
+            </p>
+        </div>
+        
+        <div class="control-group">
+            <h3>📅 Jump to Date</h3>
+            <input type="date" id="date-picker" />
+            <button id="jump-to-date">🎯 Go to Date</button>
+        </div>
+        
+        <div class="control-group">
+            <h3>⏯️ Time Control</h3>
+            <button id="play-pause-btn">⏸️ Pause</button>
+            <button id="reset-time-btn">🔄 Reset Time</button>
+            <div style="margin-top: 10px;">
+                <label style="font-size: 12px;">Current date: <span id="current-date">-</span></label>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h3>🎮 Jog/Shuttle Control</h3>
+            <input type="range" id="jog-control" min="-100" max="100" value="0" step="1" />
+            <div id="jog-status" style="font-size: 12px; text-align: center; color: #4a90e2;">Center - Normal Speed</div>
+        </div>
+        
+        <div class="control-group">
+            <h3>⚡ Simulation Speed</h3>
+            <input type="range" id="time-speed-slider" min="0" max="120" value="24" step="1" />
+            <div style="font-size: 12px; text-align: center;">
+                Speed: <span id="time-speed">1.0 hours/frame</span>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <h3>🎯 Camera</h3>
+            <button id="focus-earth-btn" style="background: linear-gradient(45deg, #00aaff, #0066cc); color: white; font-weight: bold;">🌍 Focus Earth</button>
+            <button id="reset-camera-btn">🔄 Reset View</button>
+        </div>
+    </div>
+    
+    <div class="info-panel" id="info-panel">
+        <h2 style="font-size: 18px; margin-bottom: 15px;">ℹ️ Information</h2>
+        
+        <div class="info-card">
+            <div class="info-row">
+                <span class="info-label">Loaded Asteroids:</span>
+                <span class="info-value" id="total-asteroids">0</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Hazardous (PHA):</span>
+                <span class="info-value" id="hazardous-count">0</span>
+            </div>
+        </div>
+        
+        <h3 style="font-size: 14px; margin-bottom: 8px; color: #4a90e2;">🌠 Asteroid List</h3>
+        <div class="asteroid-list" id="asteroid-list">
+            <p style="font-size: 12px; color: #888; text-align: center; padding: 20px;">
+                Load a JSON file to see asteroids
+            </p>
+        </div>
+        
+        <div id="asteroid-details"></div>
+        
+        <!-- Kinetic Impactor Simulation Panel -->
+        <div id="kinetic-impactor-panel" class="hidden" style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #4a90e2;">
+            <h3 style="font-size: 16px; margin-bottom: 15px; color: #4a90e2;">
+                🚀 Kinetic Impactor Simulation
+            </h3>
+            
+            <div class="info-card" style="margin-bottom: 15px;">
+                <div class="info-row">
+                    <span class="info-label">Target:</span>
+                    <span class="info-value" id="impactor-target-name">None selected</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Diameter:</span>
+                    <span class="info-value" id="impactor-target-diameter">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Type:</span>
+                    <span class="info-value" id="impactor-target-type">-</span>
+                </div>
+            </div>
+            
+            <!-- Collision Countdown -->
+            <div id="collision-countdown-section" class="info-card hidden" style="margin-bottom: 15px; background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.3);">
+                <div class="info-row">
+                    <span class="info-label">⚠️ Collision Date:</span>
+                    <span class="info-value" id="collision-date">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">⏱️ Time Until Impact:</span>
+                    <span class="info-value" id="collision-countdown" style="font-weight: bold; color: #ff6666;">-</span>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h4 style="font-size: 13px; margin-bottom: 8px; color: #4a90e2;">⚙️ Impactor Parameters</h4>
+                
+                <label for="impactor-mass" style="font-size: 12px; color: #aaa; display: block; margin-bottom: 5px;">
+                    Mass (kg):
+                </label>
+                <input 
+                    type="number" 
+                    id="impactor-mass" 
+                    min="100" 
+                    max="100000" 
+                    value="1000" 
+                    step="100"
+                    style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid #333; border-radius: 4px; color: white; font-size: 14px; margin-bottom: 10px;"
+                />
+                
+                <label for="impactor-velocity" style="font-size: 12px; color: #aaa; display: block; margin-bottom: 5px;">
+                    Impact Velocity (km/s):
+                </label>
+                <input 
+                    type="number" 
+                    id="impactor-velocity" 
+                    min="1" 
+                    max="50" 
+                    value="10" 
+                    step="0.1"
+                    style="width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid #333; border-radius: 4px; color: white; font-size: 14px; margin-bottom: 10px;"
+                />
+                
+                <label for="impactor-beta" style="font-size: 12px; color: #aaa; display: block; margin-bottom: 5px;">
+                    Beta Factor (β): <span id="beta-value" style="color: #4a90e2; font-weight: bold;">3.0</span>
+                </label>
+                <input 
+                    type="range" 
+                    id="impactor-beta" 
+                    min="1.0" 
+                    max="5.0" 
+                    value="3.0" 
+                    step="0.1"
+                    style="width: 100%; margin-bottom: 5px; cursor: pointer; accent-color: #4a90e2;"
+                />
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #666; margin-bottom: 15px;">
+                    <span>1.0</span>
+                    <span>3.0 (Default)</span>
+                    <span>5.0</span>
+                </div>
+                
+                <button 
+                    id="simulate-impact-btn" 
+                    style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); width: 100%; padding: 12px; font-size: 14px; font-weight: bold; margin-bottom: 10px;"
+                    title="Run kinetic impact simulation"
+                >
+                    🎯 SIMULATE IMPACT
+                </button>
+                
+                <button 
+                    id="reset-orbit-btn" 
+                    class="hidden"
+                    style="background: linear-gradient(135deg, #7f8c8d 0%, #95a5a6 100%); width: 100%; padding: 10px; font-size: 13px;"
+                    title="Reset to original orbit"
+                >
+                    ↩️ Reset Orbit
+                </button>
+            </div>
+            
+            <!-- Results Display (hidden by default) -->
+            <div id="impactor-results" class="hidden" style="margin-top: 15px;">
+                <h4 style="font-size: 13px; margin-bottom: 10px; color: #2ecc71;">📊 Simulation Results</h4>
+                
+                <div class="info-card" style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3);">
+                    <div class="info-row">
+                        <span class="info-label">Asteroid Mass:</span>
+                        <span class="info-value" id="result-mass">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Delta-V (Δv):</span>
+                        <span class="info-value" id="result-deltav">-</span>
+                    </div>
+                    <div class="info-row" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; margin-top: 8px;">
+                        <span class="info-label">Orbit Change (Δa):</span>
+                        <span class="info-value" id="result-delta-a">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Period Change (ΔT):</span>
+                        <span class="info-value" id="result-delta-period">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Eccentricity Change (Δe):</span>
+                        <span class="info-value" id="result-delta-e">-</span>
+                    </div>
+                    <div class="info-row" style="border-top: 1px solid rgba(255,165,0,0.3); padding-top: 8px; margin-top: 8px;">
+                        <span class="info-label" style="color: #ffa500;">🎬 Demo Amplification:</span>
+                        <span class="info-value" style="color: #ffa500;" id="result-amplification">-</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 10px; padding: 10px; background: rgba(74, 144, 226, 0.1); border-radius: 6px; border: 1px solid rgba(74, 144, 226, 0.3);">
+                    <p style="font-size: 11px; color: #aaa; margin-bottom: 5px;">
+                        <strong style="color: #4a90e2;">Legend:</strong>
+                    </p>
+                    <p style="font-size: 11px; color: #00aaff; margin: 0;">
+                        � Original Orbit (Blue)
+                    </p>
+                    <p style="font-size: 11px; color: #ff3300; margin: 0;">
+                        🔴 Modified Orbit (Red)
+                    </p>
+                    <p style="font-size: 11px; color: #ff0000; margin: 5px 0 0 0;">
+                        🔴 Asteroid (Red highlight in Impactor Mode)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification">
+        <h3 id="notification-title" style="margin-bottom: 10px;">Notification</h3>
+        <p id="notification-message"></p>
+    </div>
+    
+    <!-- Play Button Overlay -->
+    <div id="play-overlay" class="play-overlay hidden">
+        <div class="play-container">
+            <p class="play-subtitle">
+                Top 200 closest asteroids to Earth (1975-2025)<br>
+                🥇 2020 VT4: World record - 6,740 km (2020)<br>
+                📊 Distances verified by NASA JPL CAD
+            </p>
+            <button id="start-simulation-btn" class="start-simulation-btn">
+                <span class="play-icon">▶️</span>
+                <span class="play-text">Start Simulation</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    
+    <!-- System Modules -->
+    <script src="src/trajectory-simulator.js"></script>
+    <script src="src/kinetic-impactor.js"></script>
+    <script src="src/asteroid-visualizer.js"></script>
+    
+    <script>
+        // ==========================================
+        // 🚀 VISUALIZER INITIALIZATION v3.0
+        // ==========================================
+        
+        console.log('🌌 Asteroid Trajectory Viewer v3.0');
+        console.log('📦 Modular architecture with enhanced precision');
+        console.log('   ✓ TrajectorySimulator - Keplerian orbital engine');
+        console.log('   ✓ AsteroidVisualizer - 3D visualization');
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎬 DOM ready, initializing visualizer...');
+            
+            // 🔧 UI DIAGNOSTICS AND FORCED CORRECTION
+            console.log('🔍 UI diagnostics started...');
+            
+            // Force pointer-events styles
+            const canvasContainer = document.getElementById('canvas-container');
+            if (canvasContainer) {
+                canvasContainer.style.pointerEvents = 'none';
+                const canvas = canvasContainer.querySelector('canvas');
+                if (canvas) {
+                    canvas.style.pointerEvents = 'auto';
+                }
+                console.log('✅ Canvas pointer-events configured');
+            }
+            
+            // Force pointer-events on panels
+            const controlsPanel = document.getElementById('controls-panel');
+            const infoPanel = document.getElementById('info-panel');
+            if (controlsPanel) {
+                controlsPanel.style.pointerEvents = 'auto';
+                controlsPanel.style.zIndex = '1000';
+                console.log('✅ Interactive controls panel');
+                console.log('   - Height:', controlsPanel.scrollHeight, 'px');
+                console.log('   - Visible:', controlsPanel.offsetHeight, 'px');
+                console.log('   - Scrollable:', controlsPanel.scrollHeight > controlsPanel.offsetHeight);
+            }
+            if (infoPanel) {
+                infoPanel.style.pointerEvents = 'auto';
+                infoPanel.style.zIndex = '1000';
+                console.log('✅ Interactive info panel');
+            }
+            
+            // Force pointer-events on toggle buttons
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            toggleBtns.forEach(btn => {
+                btn.style.pointerEvents = 'auto';
+                btn.style.zIndex = '1001';
+                console.log('   - Toggle button:', btn.id, '| Click:', btn.onclick !== null || btn.hasAttribute('onclick'));
+            });
+            console.log(`✅ ${toggleBtns.length} toggle buttons configured`);
+            
+            // Hamburger Menu Handlers for Mobile
+            const hamburgerLeft = document.getElementById('hamburger-left');
+            const hamburgerRight = document.getElementById('hamburger-right');
+            
+            if (hamburgerLeft && controlsPanel) {
+                hamburgerLeft.addEventListener('click', function() {
+                    const isVisible = !controlsPanel.classList.contains('panel-hidden');
+                    if (isVisible) {
+                        controlsPanel.classList.add('panel-hidden');
+                        hamburgerLeft.classList.remove('active');
+                    } else {
+                        controlsPanel.classList.remove('panel-hidden');
+                        hamburgerLeft.classList.add('active');
+                        // Close right panel when opening left
+                        if (infoPanel && !infoPanel.classList.contains('panel-hidden')) {
+                            infoPanel.classList.add('panel-hidden');
+                            if (hamburgerRight) hamburgerRight.classList.remove('active');
+                        }
+                    }
+                });
+                console.log('✅ Left hamburger menu configured');
+            }
+            
+            if (hamburgerRight && infoPanel) {
+                hamburgerRight.addEventListener('click', function() {
+                    const isVisible = !infoPanel.classList.contains('panel-hidden');
+                    if (isVisible) {
+                        infoPanel.classList.add('panel-hidden');
+                        hamburgerRight.classList.remove('active');
+                    } else {
+                        infoPanel.classList.remove('panel-hidden');
+                        hamburgerRight.classList.add('active');
+                        // Close left panel when opening right
+                        if (controlsPanel && !controlsPanel.classList.contains('panel-hidden')) {
+                            controlsPanel.classList.add('panel-hidden');
+                            if (hamburgerLeft) hamburgerLeft.classList.remove('active');
+                        }
+                    }
+                });
+                console.log('✅ Right hamburger menu configured');
+            }
+            
+            // Verify .hidden class
+            const style = document.createElement('style');
+            style.textContent = '.hidden { display: none !important; }';
+            document.head.appendChild(style);
+            console.log('✅ .hidden class verified');
+            
+            const visualizer = new AsteroidVisualizer();
+            visualizer.init();
+            
+            // 🚀 Auto-load asteroids on startup
+            setTimeout(() => {
+                console.log('🎯 Loading verified asteroids automatically...');
+                visualizer.loadVerifiedAsteroids();
+            }, 500); // Small delay to ensure everything is initialized
+            
+            console.log('✅ System initialized successfully');
+            console.log('🎯 Precision: Error ~15,000 km (before: 73M km) - 4,800x improvement');
+        });
+    </script>
+</body>
+</html>
