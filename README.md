@@ -3,7 +3,7 @@
 <div align="center">
 
 ![NASA Space Apps Challenge 2025](https://img.shields.io/badge/NASA%20Space%20Apps-2025-0B3D91?style=for-the-badge&logo=nasa)
-![Version](https://img.shields.io/badge/version-1.5.1-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.6.0-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT%20Educational-green?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Live-success?style=for-the-badge)
 
@@ -271,7 +271,8 @@ VITE_API_URL=http://localhost:7071
 **No Authentication Required** (educational use)
 
 **Quick Access**:
-- 🏠 [API Landing Page](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/) - Beautiful NASA-branded welcome page
+- 🏠 [API Root](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/) - **JSON descriptor** (enterprise standard)
+- 📋 [API Info](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api/info) - Detailed capabilities and physics models
 - 📖 [Interactive Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/) - Try all endpoints live
 - 💚 [Health Check](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api/health) - API status
 
@@ -292,6 +293,8 @@ curl -X POST https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecont
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
+| `/` | GET | **API descriptor** (JSON with all endpoints) |
+| `/api/info` | GET | **Detailed API information** (capabilities, models, limitations) |
 | `/api/health` | GET | Health check |
 | `/api/simulate/impact` | POST | Simulate asteroid impact |
 | `/api/simulate/deflection` | POST | Simulate planetary defense |
@@ -631,6 +634,6 @@ If you find this project useful for education, please ⭐ star the repo!
 [![Live](https://img.shields.io/badge/Demo-Live-success?style=flat-square)](https://meteormadness.earth)
 [![License](https://img.shields.io/badge/License-MIT%20Educational-green?style=flat-square)](./LICENSE)
 
-**Version 1.5.1** | October 2025
+**Version 1.6.0** | October 2025
 
 </div>
