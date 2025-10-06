@@ -279,21 +279,19 @@ curl -X POST https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecont
 
 **Status**: ✅ **VALID OpenAPI 3.0.3 specification**
 
-### Interactive Documentation (Local)
+### Interactive Documentation (Production)
 
-**File**: `asteroid-impact-simulator/api/api-docs.html`
+**Live Swagger UI**: [https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/)
 
-**To View**:
-1. Open `api-docs.html` in browser
-2. Swagger UI will load automatically
-3. Try out endpoints interactively
+**Status**: ✅ **LIVE & OPERATIONAL**
 
 **Features**:
 - ✅ All endpoints documented
 - ✅ Request/response schemas
-- ✅ Try-it-out functionality
-- ✅ Code examples
+- ✅ Try-it-out functionality (live testing)
+- ✅ Code examples (Python, JavaScript, cURL)
 - ✅ NASA branding
+- ✅ Integrated into API server at `/api-docs/`
 
 ---
 

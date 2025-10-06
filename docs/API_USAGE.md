@@ -14,7 +14,7 @@ Welcome to the Asteroid Impact Simulator API! This guide provides examples and b
 
 **Response Format**: JSON
 
-**Interactive API Documentation**: [Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) *(to be deployed)*
+**Interactive API Documentation**: [Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/) ⭐ **LIVE!**
 
 ---
 

@@ -8,7 +8,7 @@
 ![Status](https://img.shields.io/badge/status-Live-success?style=for-the-badge)
 
 **🌍 Live Demo**: [meteormadness.earth](https://meteormadness.earth)
-**🚀 Interactive API**: [Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) ⭐ **NEW!**
+**🚀 Interactive API**: [Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/) ⭐ **NEW!**
 **📚 API Guide**: [Usage Documentation](./docs/API_USAGE.md)
 **🔬 Scientific Docs**: [Physics & Formulas](./docs/SCIENTIFIC_DOCUMENTATION.md)
 
@@ -262,7 +262,7 @@ VITE_API_URL=http://localhost:7071
 
 ### Public Educational API
 
-**🌐 Interactive Documentation**: [**Open Swagger UI**](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) ⭐
+**🌐 Interactive Documentation**: [**Open Swagger UI**](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/) ⭐
 
 **Base URL**: `https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io`
 
@@ -272,7 +272,7 @@ VITE_API_URL=http://localhost:7071
 
 **Quick Access**:
 - 🏠 [API Landing Page](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/) - Beautiful NASA-branded welcome page
-- 📖 [Interactive Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) - Try all endpoints live
+- 📖 [Interactive Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/) - Try all endpoints live
 - 💚 [Health Check](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api/health) - API status
 
 ### Quick Example
@@ -302,7 +302,7 @@ curl -X POST https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecont
 
 ### Documentation
 
-- **🚀 Interactive Swagger UI**: [Live API Docs](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) - **Try it now!**
+- **🚀 Interactive Swagger UI**: [Live API Docs](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs/) - **Try it now!**
 - **📚 Full API Guide**: [docs/API_USAGE.md](./docs/API_USAGE.md) - Complete usage examples
 - **📄 OpenAPI Spec**: [swagger.yaml](./asteroid-impact-simulator/api/swagger.yaml) - OpenAPI 3.0.3 specification
 - **🔬 Scientific Details**: [docs/SCIENTIFIC_DOCUMENTATION.md](./docs/SCIENTIFIC_DOCUMENTATION.md) - Physics & formulas
@@ -631,6 +631,6 @@ If you find this project useful for education, please ⭐ star the repo!
 [![Live](https://img.shields.io/badge/Demo-Live-success?style=flat-square)](https://meteormadness.earth)
 [![License](https://img.shields.io/badge/License-MIT%20Educational-green?style=flat-square)](./LICENSE)
 
-**Version 1.5.0** | October 2025
+**Version 1.5.1** | October 2025
 
 </div>
