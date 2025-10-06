@@ -1,0 +1,549 @@
+openapi: 3.0.3
+info:
+  title: Asteroid Impact Simulator API
+  description: |
+    ## 🌌 NASA Space Apps Challenge 2025 - Meteor Madness
+
+    Educational API for simulating asteroid impacts and planetary defense scenarios.
+
+    ### Data Sources
+    - **NASA NEO (Near-Earth Object) API**: Real asteroid orbital data
+    - **NASA JPL SBDB (Small-Body Database)**: Comprehensive asteroid characteristics
+    - **USGS Elevation API**: Terrain elevation data
+    - **USGS Earthquake API**: Seismic magnitude comparison data
+
+    ### Scientific Basis
+    This API implements peer-reviewed physics models for:
+    - Impact energy calculations (kinetic energy formula)
+    - Crater formation (Collins et al., 2005 scaling laws)
+    - Blast zone effects (based on Hildebrand et al., 1991)
+    - Seismic magnitude estimation (Schultz & Gault, 1975)
+    - Orbital mechanics (Keplerian elements, Newton-Raphson solver)
+
+    ### Educational Purpose
+    This simulator is designed for educational purposes and demonstrates:
+    - Real NASA data integration
+    - Scientific calculation methodologies
+    - Planetary defense concepts
+    - Impact risk assessment
+
+    **⚠️ DISCLAIMER**: Simplified models for educational use. Not for actual planetary defense planning.
+
+  version: 1.5.0
+  contact:
+    name: Meteor Madness Team
+    url: https://meteormadness.earth
+  license:
+    name: MIT License (Educational Use)
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io
+    description: Production API (Azure Container Apps)
+  - url: http://localhost:7071
+    description: Local development server
+
+tags:
+  - name: Simulation
+    description: Asteroid impact simulation endpoints
+  - name: NASA NEO Data
+    description: NASA Near-Earth Object data endpoints
+  - name: USGS Data
+    description: USGS geological and seismic data endpoints
+  - name: Health
+    description: API health and status endpoints
+
+paths:
+  /api/health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Check API health status and service availability
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  services:
+                    type: object
+                    properties:
+                      physics:
+                        type: string
+                        example: operational
+                      nasa:
+                        type: string
+                        example: operational
+                      usgs:
+                        type: string
+                        example: operational
+
+  /api/simulate/impact:
+    post:
+      tags:
+        - Simulation
+      summary: Simulate asteroid impact
+      description: |
+        Simulates an asteroid impact with specified parameters.
+
+        **Physics Calculations**:
+        - Impact energy: E = ½mv² (Joules)
+        - Crater diameter: D = 1.161 × ρ^0.33 × L^0.78 × v^0.44 × sin(θ)^0.33 (Collins et al., 2005)
+        - Seismic magnitude: M = 0.67 × log₁₀(E) - 5.87
+        - Blast zones: Fireball, thermal radiation, air blast, ground shock
+
+        **Data Sources**:
+        - USGS Elevation API for impact location terrain
+        - Population density data for casualty estimates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - diameter
+                - velocity
+                - impactLocation
+              properties:
+                diameter:
+                  type: number
+                  description: Asteroid diameter in meters
+                  example: 100
+                  minimum: 1
+                  maximum: 100000
+                velocity:
+                  type: number
+                  description: Impact velocity in km/s
+                  example: 20
+                  minimum: 11
+                  maximum: 72
+                angle:
+                  type: number
+                  description: Impact angle in degrees (0=horizontal, 90=vertical)
+                  example: 45
+                  default: 45
+                  minimum: 0
+                  maximum: 90
+                density:
+                  type: number
+                  description: Asteroid density in kg/m³
+                  example: 3000
+                  default: 3000
+                  minimum: 1000
+                  maximum: 8000
+                impactLocation:
+                  type: object
+                  required:
+                    - lat
+                    - lon
+                  properties:
+                    lat:
+                      type: number
+                      description: Latitude (-90 to 90)
+                      example: 48.8566
+                      minimum: -90
+                      maximum: 90
+                    lon:
+                      type: number
+                      description: Longitude (-180 to 180)
+                      example: 2.3522
+                      minimum: -180
+                      maximum: 180
+      responses:
+        '200':
+          description: Simulation completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  simulation:
+                    $ref: '#/components/schemas/ImpactSimulation'
+                  zoneAnalysis:
+                    $ref: '#/components/schemas/ZoneAnalysis'
+                  timestamp:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Simulation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/simulate/deflection:
+    post:
+      tags:
+        - Simulation
+      summary: Simulate asteroid deflection
+      description: |
+        Simulates planetary defense deflection strategies.
+
+        **Methods**:
+        - **Kinetic Impactor**: DART-style spacecraft collision (NASA, 2022)
+        - **Gravity Tractor**: Slow deflection via gravitational pull
+        - **Nuclear**: Last-resort high-energy deflection
+
+        **Calculations**:
+        - Delta-V required: Δv = (2 × miss_distance) / warning_time
+        - Momentum transfer: Δp = m_spacecraft × v_impact × β
+        - Success probability based on warning time and asteroid mass
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - asteroidDiameter
+                - warningTime
+                - missDistance
+              properties:
+                asteroidDiameter:
+                  type: number
+                  description: Asteroid diameter in meters
+                  example: 140
+                asteroidDensity:
+                  type: number
+                  description: Asteroid density in kg/m³
+                  example: 3000
+                  default: 3000
+                warningTime:
+                  type: number
+                  description: Warning time in days before impact
+                  example: 365
+                missDistance:
+                  type: number
+                  description: Required miss distance in kilometers
+                  example: 6400
+                method:
+                  type: string
+                  enum: [kinetic, gravity, nuclear]
+                  description: Deflection method
+                  default: kinetic
+      responses:
+        '200':
+          description: Deflection simulation completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deflection:
+                    $ref: '#/components/schemas/DeflectionResult'
+                  asteroidMass:
+                    type: number
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/neo/feed:
+    get:
+      tags:
+        - NASA NEO Data
+      summary: Get NASA NEO feed
+      description: |
+        Retrieves Near-Earth Object data from NASA NEO API.
+
+        **Data Source**: NASA/JPL NEO Web Service
+        **Update Frequency**: Daily
+        **Coverage**: All objects within 0.05 AU of Earth
+      parameters:
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Start date (YYYY-MM-DD)
+          example: '2025-10-01'
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: End date (YYYY-MM-DD)
+          example: '2025-10-07'
+      responses:
+        '200':
+          description: NEO data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  element_count:
+                    type: integer
+                  near_earth_objects:
+                    type: object
+
+  /api/neo/asteroid/{id}:
+    get:
+      tags:
+        - NASA NEO Data
+      summary: Get specific asteroid data
+      description: |
+        Retrieves detailed information about a specific asteroid from NASA NEO API.
+
+        **Data includes**:
+        - Orbital elements (semi-major axis, eccentricity, inclination)
+        - Physical characteristics (diameter, absolute magnitude)
+        - Close approach data
+        - Potentially hazardous designation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: NASA SPK-ID or asteroid designation
+          example: '433'
+      responses:
+        '200':
+          description: Asteroid data retrieved
+        '404':
+          description: Asteroid not found
+
+  /api/neo/close-approaches:
+    get:
+      tags:
+        - NASA NEO Data
+      summary: Get close approach events
+      description: Get asteroids with close approaches to Earth
+      parameters:
+        - name: date_min
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_max
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dist_max
+          in: query
+          schema:
+            type: number
+          description: Maximum distance in AU
+          example: 0.05
+      responses:
+        '200':
+          description: Close approaches retrieved
+
+  /api/neo/potentially-hazardous:
+    get:
+      tags:
+        - NASA NEO Data
+      summary: Get potentially hazardous asteroids
+      description: |
+        Lists asteroids designated as Potentially Hazardous (PHAs).
+
+        **PHA Criteria (NASA)**:
+        - MOID (Minimum Orbit Intersection Distance) < 0.05 AU
+        - Absolute magnitude H < 22.0 (diameter ~140m or larger)
+      responses:
+        '200':
+          description: PHA list retrieved
+
+  /api/neo/samples:
+    get:
+      tags:
+        - NASA NEO Data
+      summary: Get sample asteroids
+      description: Get pre-loaded sample asteroids for testing/demo
+      responses:
+        '200':
+          description: Sample asteroids retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /api/usgs/elevation:
+    get:
+      tags:
+        - USGS Data
+      summary: Get elevation at coordinates
+      description: |
+        Retrieves terrain elevation from USGS Elevation API.
+
+        **Data Source**: USGS Elevation Point Query Service
+        **Accuracy**: ~10m vertical resolution (varies by region)
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Elevation data retrieved
+
+  /api/usgs/earthquakes:
+    get:
+      tags:
+        - USGS Data
+      summary: Get earthquake data
+      description: |
+        Retrieves earthquake data from USGS for seismic magnitude comparison.
+
+        **Data Source**: USGS Earthquake Hazards Program
+      parameters:
+        - name: min_magnitude
+          in: query
+          schema:
+            type: number
+          default: 5.0
+        - name: lat
+          in: query
+          schema:
+            type: number
+        - name: lon
+          in: query
+          schema:
+            type: number
+        - name: radius
+          in: query
+          schema:
+            type: number
+          description: Radius in km
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          default: 100
+      responses:
+        '200':
+          description: Earthquake data retrieved
+
+components:
+  schemas:
+    ImpactSimulation:
+      type: object
+      properties:
+        impactEnergy:
+          type: object
+          properties:
+            joules:
+              type: number
+              description: Impact energy in Joules
+            megatonsTNT:
+              type: number
+              description: TNT equivalent in megatons
+        crater:
+          type: object
+          properties:
+            diameter:
+              type: number
+              description: Crater diameter in meters
+            depth:
+              type: number
+              description: Crater depth in meters
+            volume:
+              type: number
+              description: Crater volume in cubic meters
+        seismicMagnitude:
+          type: number
+          description: Richter scale equivalent
+        blastZones:
+          type: object
+          properties:
+            fireball:
+              type: number
+              description: Fireball radius in meters
+            thermal:
+              type: number
+              description: Thermal radiation radius in meters
+            airBlast:
+              type: number
+              description: Air blast radius in meters
+            radiation:
+              type: number
+              description: Radiation zone radius in meters
+        casualties:
+          type: object
+          properties:
+            estimated:
+              type: number
+            affectedCities:
+              type: array
+              items:
+                type: object
+
+    DeflectionResult:
+      type: object
+      properties:
+        method:
+          type: string
+        feasibility:
+          type: string
+          enum: [feasible, challenging, infeasible]
+        requiredDeltaV:
+          type: number
+          description: Required velocity change in m/s
+        missionCost:
+          type: string
+        timeline:
+          type: string
+        successProbability:
+          type: number
+          minimum: 0
+          maximum: 1
+
+    ZoneAnalysis:
+      type: object
+      properties:
+        impactPoint:
+          type: object
+          properties:
+            elevation:
+              type: number
+            isOcean:
+              type: boolean
+            waterDepth:
+              type: number
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Optional API key for higher rate limits (educational use)
+
+security: []

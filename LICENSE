@@ -1,0 +1,175 @@
+MIT License (Educational Use)
+
+Copyright (c) 2025 Meteor Madness Team - NASA Space Apps Challenge 2025
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+EDUCATIONAL AND SCIENTIFIC DISCLAIMER
+================================================================================
+
+This software is developed for EDUCATIONAL PURPOSES ONLY as part of the NASA
+Space Apps Challenge 2025 - Meteor Madness challenge.
+
+IMPORTANT NOTICES:
+
+1. EDUCATIONAL PURPOSE
+   This simulator is designed for educational demonstration, scientific learning,
+   and public outreach. It is NOT intended for actual planetary defense planning,
+   operational decision-making, or mission-critical applications.
+
+2. DATA SOURCES AND ATTRIBUTION
+   This software integrates data from the following sources:
+
+   a) NASA/JPL APIs and Databases:
+      - NASA NEO (Near-Earth Object) Web Service API
+      - NASA JPL Small-Body Database (SBDB)
+      - NASA Horizons System (orbital elements)
+
+      NASA Data Policy: All NASA data is publicly available and provided
+      under NASA's Open Data Policy. NASA requires attribution but does not
+      endorse this educational project.
+
+      Citation: "Data courtesy of NASA/JPL-Caltech"
+      Source: https://api.nasa.gov/
+
+   b) USGS (United States Geological Survey):
+      - USGS Elevation Point Query Service
+      - USGS Earthquake Hazards Program data
+
+      USGS Data Policy: USGS information is in the public domain and may be
+      used without restriction.
+
+      Citation: "Elevation and seismic data courtesy of USGS"
+
+3. SCIENTIFIC MODELS AND LIMITATIONS
+
+   The physics calculations in this simulator are based on peer-reviewed
+   scientific literature but employ SIMPLIFIED MODELS for computational
+   efficiency and educational clarity:
+
+   a) Impact Physics Models:
+      - Crater scaling laws: Collins et al. (2005), Holsapple (1993)
+      - Energy calculations: Standard kinetic energy formula (E = ½mv²)
+      - Blast effects: Simplified from Hills & Goda (1993), Hildebrand (1991)
+      - Seismic magnitude: Schultz & Gault (1975)
+
+   b) Orbital Mechanics:
+      - Keplerian orbital elements (simplified two-body problem)
+      - Newton-Raphson solver for Kepler's equation
+      - Does NOT account for: planetary perturbations, non-gravitational
+        forces, relativistic effects, or precise numerical integration
+
+   c) Known Limitations:
+      - Assumes spherical, homogeneous asteroids
+      - Simplified atmospheric entry physics
+      - Does not model fragmentation in atmosphere
+      - Crater formation assumes idealized target properties
+      - Population casualty estimates are statistical approximations
+      - Deflection simulations use simplified momentum transfer models
+
+4. ACCURACY AND VALIDATION
+
+   While based on scientific principles, this simulator's results should be
+   considered APPROXIMATE and suitable for:
+   - Educational demonstrations
+   - Understanding basic impact physics concepts
+   - Comparing relative magnitudes of different scenarios
+   - Public outreach and engagement
+
+   Results should NOT be used for:
+   - Actual planetary defense mission planning
+   - Publishing scientific research without validation
+   - Risk assessment for real Near-Earth Objects
+   - Policy or decision-making purposes
+
+5. SCIENTIFIC REFERENCES
+
+   Primary scientific literature used in model development:
+
+   - Collins, G. S., Melosh, H. J., & Marcus, R. A. (2005). Earth impact
+     effects program: A Web-based computer program for calculating the
+     regional environmental consequences of a meteoroid impact on Earth.
+     Meteoritics & Planetary Science, 40(6), 817-840.
+
+   - Holsapple, K. A. (1993). The scaling of impact processes in planetary
+     sciences. Annual Review of Earth and Planetary Sciences, 21(1), 333-373.
+
+   - Hills, J. G., & Goda, M. P. (1993). The fragmentation of small asteroids
+     in the atmosphere. The Astronomical Journal, 105(3), 1114-1144.
+
+   - Schultz, P. H., & Gault, D. E. (1975). Seismic effects from major basin
+     formations on the moon and mercury. The Moon, 12(2), 159-177.
+
+6. PLANETARY DEFENSE RESOURCES
+
+   For ACTUAL planetary defense information, please refer to:
+   - NASA's Planetary Defense Coordination Office (PDCO)
+   - European Space Agency's Space Situational Awareness (SSA) Programme
+   - International Asteroid Warning Network (IAWN)
+   - Space Mission Planning Advisory Group (SMPAG)
+
+7. NASA ENDORSEMENT
+
+   This software is NOT endorsed, sponsored, or officially affiliated with NASA,
+   JPL, USGS, or any governmental agency. This is an independent educational
+   project created for the NASA Space Apps Challenge.
+
+8. CONTRIBUTIONS AND IMPROVEMENTS
+
+   This is open-source educational software. The scientific community,
+   educators, and developers are encouraged to:
+   - Review and improve the physics models
+   - Identify limitations and assumptions
+   - Contribute more accurate calculations
+   - Enhance educational value
+   - Report bugs or scientific inaccuracies
+
+   For contributions, please visit: https://github.com/TawbeBaker/Cyber-and-Space
+
+9. CONTACT AND ATTRIBUTION
+
+   When using this software for educational purposes, please attribute:
+
+   "Asteroid Impact Simulator - Meteor Madness
+   NASA Space Apps Challenge 2025
+   Educational software - Not for operational use
+   Data sources: NASA/JPL, USGS
+   https://meteormadness.earth"
+
+10. UPDATES AND MAINTENANCE
+
+    This software reflects scientific understanding as of October 2025.
+    Models and data may become outdated. Users should verify current
+    scientific consensus for any serious educational application.
+
+================================================================================
+
+By using this software, you acknowledge that you have read and understood
+these disclaimers and agree to use the software solely for educational,
+non-operational purposes.
+
+For questions about scientific accuracy or educational use:
+Visit: https://meteormadness.earth
+GitHub: https://github.com/TawbeBaker/Cyber-and-Space
+
+Built with support from the open-source community and inspired by NASA's
+commitment to open science and public engagement.
+
+🌌 Ad Astra Per Aspera - To the Stars Through Difficulties 🌌
