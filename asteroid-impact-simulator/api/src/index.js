@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const appInsights = require('applicationinsights');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const path = require('path');
 
 const PhysicsEngine = require('./services/physicsEngine');
 const NASANeoService = require('./services/nasaNeoService');
@@ -65,6 +68,187 @@ const limiter = rateLimit({
     message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', limiter);
+
+// Load Swagger specification
+const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
+
+// Swagger UI options
+const swaggerOptions = {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Asteroid Impact Simulator API - NASA Space Apps Challenge 2025',
+    customfavIcon: 'https://api.nasa.gov/assets/img/favicons/favicon-192.png'
+};
+
+// Serve Swagger UI at /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+
+// Welcome page at root
+app.get('/', (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Impact Simulator API</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #0B3D91 0%, #1e5a9e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .section h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #0B3D91;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin: 0.5rem;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+        ul li::before {
+            content: "→ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌌 Asteroid Impact Simulator API</h1>
+        <p class="subtitle"><span class="status"></span>NASA Space Apps Challenge 2025</p>
+
+        <div class="badges">
+            <span class="badge">🛰️ NASA Data</span>
+            <span class="badge">🔬 Scientific Models</span>
+            <span class="badge">📚 Educational Use</span>
+            <span class="badge">🌍 Public API</span>
+        </div>
+
+        <div class="section">
+            <h2>📖 Interactive Documentation</h2>
+            <p>Explore and test all API endpoints with our interactive Swagger UI:</p>
+            <div class="links">
+                <a href="/api-docs" class="btn">🚀 Open API Documentation</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚡ Quick Start</h2>
+            <p><strong>Base URL:</strong> <code>${req.protocol}://${req.get('host')}</code></p>
+            <ul style="margin-top: 1rem;">
+                <li>Health Check: <code>GET /api/health</code></li>
+                <li>Simulate Impact: <code>POST /api/simulate/impact</code></li>
+                <li>Simulate Deflection: <code>POST /api/simulate/deflection</code></li>
+                <li>NASA NEO Data: <code>GET /api/neo/feed</code></li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Additional Resources</h2>
+            <div class="links">
+                <a href="https://meteormadness.earth" class="btn btn-secondary" target="_blank">🌍 Live Demo</a>
+                <a href="https://github.com/TawbeBaker/Cyber-and-Space" class="btn btn-secondary" target="_blank">💻 GitHub</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem; opacity: 0.8; font-size: 0.9rem;">
+            <p>Version 1.5.0 | Educational Use Only</p>
+            <p style="margin-top: 0.5rem;">Data: NASA/JPL-Caltech, USGS | Rate Limit: 100 req/15min</p>
+        </div>
+    </div>
+</body>
+</html>
+    `);
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
