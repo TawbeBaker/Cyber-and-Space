@@ -3,13 +3,14 @@
 <div align="center">
 
 ![NASA Space Apps Challenge 2025](https://img.shields.io/badge/NASA%20Space%20Apps-2025-0B3D91?style=for-the-badge&logo=nasa)
-![Version](https://img.shields.io/badge/version-1.5.0-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.5.1-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT%20Educational-green?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-Live-success?style=for-the-badge)
 
 **🌍 Live Demo**: [meteormadness.earth](https://meteormadness.earth)
-**📚 API Docs**: [API Usage Guide](./docs/API_USAGE.md)
-**🔬 Scientific Docs**: [Scientific Documentation](./docs/SCIENTIFIC_DOCUMENTATION.md)
+**🚀 Interactive API**: [Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) ⭐ **NEW!**
+**📚 API Guide**: [Usage Documentation](./docs/API_USAGE.md)
+**🔬 Scientific Docs**: [Physics & Formulas](./docs/SCIENTIFIC_DOCUMENTATION.md)
 
 </div>
 
@@ -261,11 +262,18 @@ VITE_API_URL=http://localhost:7071
 
 ### Public Educational API
 
+**🌐 Interactive Documentation**: [**Open Swagger UI**](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) ⭐
+
 **Base URL**: `https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io`
 
 **Rate Limit**: 100 requests / 15 minutes (per IP)
 
 **No Authentication Required** (educational use)
+
+**Quick Access**:
+- 🏠 [API Landing Page](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/) - Beautiful NASA-branded welcome page
+- 📖 [Interactive Swagger UI](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) - Try all endpoints live
+- 💚 [Health Check](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api/health) - API status
 
 ### Quick Example
 
@@ -294,9 +302,10 @@ curl -X POST https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecont
 
 ### Documentation
 
-- **Full API Guide**: [docs/API_USAGE.md](./docs/API_USAGE.md)
-- **OpenAPI/Swagger Spec**: [api/swagger.yaml](./asteroid-impact-simulator/api/swagger.yaml)
-- **Scientific Details**: [docs/SCIENTIFIC_DOCUMENTATION.md](./docs/SCIENTIFIC_DOCUMENTATION.md)
+- **🚀 Interactive Swagger UI**: [Live API Docs](https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io/api-docs) - **Try it now!**
+- **📚 Full API Guide**: [docs/API_USAGE.md](./docs/API_USAGE.md) - Complete usage examples
+- **📄 OpenAPI Spec**: [swagger.yaml](./asteroid-impact-simulator/api/swagger.yaml) - OpenAPI 3.0.3 specification
+- **🔬 Scientific Details**: [docs/SCIENTIFIC_DOCUMENTATION.md](./docs/SCIENTIFIC_DOCUMENTATION.md) - Physics & formulas
 
 ### Code Examples
 
