@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Impact Simulator API - Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0B3D91 0%, #1e5a9e 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .badges {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .info-banner {
+            background: #f0f7ff;
+            border-left: 4px solid #0B3D91;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+
+        .info-banner h2 {
+            margin: 0 0 1rem 0;
+            color: #0B3D91;
+            font-size: 1.5rem;
+        }
+
+        .info-banner ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .info-banner li {
+            margin: 0.5rem 0;
+        }
+
+        .info-banner a {
+            color: #0B3D91;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .info-banner a:hover {
+            text-decoration: underline;
+        }
+
+        #swagger-ui {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .swagger-ui .topbar {
+            display: none;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+            color: #6c757d;
+        }
+
+        .footer a {
+            color: #0B3D91;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌌 Asteroid Impact Simulator API</h1>
+        <p>NASA Space Apps Challenge 2025 - Educational API Documentation</p>
+        <div class="badges">
+            <span class="badge">🛰️ NASA Data Integration</span>
+            <span class="badge">🔬 Peer-Reviewed Physics</span>
+            <span class="badge">📚 Educational Use</span>
+            <span class="badge">🌍 Open API</span>
+        </div>
+    </div>
+
+    <div class="info-banner">
+        <h2>🚀 Quick Start</h2>
+        <ul>
+            <li><strong>Base URL:</strong> <code>https://ca-api-92nppgw4.kinddesert-44c62b55.canadacentral.azurecontainerapps.io</code></li>
+            <li><strong>Rate Limit:</strong> 100 requests / 15 minutes (per IP)</li>
+            <li><strong>Authentication:</strong> None required (educational use)</li>
+            <li><strong>Response Format:</strong> JSON</li>
+        </ul>
+
+        <h2 style="margin-top: 2rem;">📖 Additional Resources</h2>
+        <ul>
+            <li><a href="https://github.com/TawbeBaker/Cyber-and-Space/blob/main/docs/API_USAGE.md" target="_blank">📚 Complete API Usage Guide</a> - Code examples in Python, JavaScript, TypeScript</li>
+            <li><a href="https://github.com/TawbeBaker/Cyber-and-Space/blob/main/docs/SCIENTIFIC_DOCUMENTATION.md" target="_blank">🔬 Scientific Documentation</a> - Physics formulas, references, limitations</li>
+            <li><a href="https://meteormadness.earth" target="_blank">🌍 Live Demo</a> - Try the interactive simulator</li>
+            <li><a href="https://github.com/TawbeBaker/Cyber-and-Space" target="_blank">💻 GitHub Repository</a> - Source code and contributions</li>
+        </ul>
+
+        <h2 style="margin-top: 2rem;">🎓 Educational Use</h2>
+        <p>This API is designed for educational purposes, demonstrating:</p>
+        <ul>
+            <li><strong>NASA Data Integration:</strong> Real asteroid data from NEO API and JPL SBDB</li>
+            <li><strong>Impact Physics:</strong> Energy, crater, seismic calculations (Collins et al. 2005)</li>
+            <li><strong>Orbital Mechanics:</strong> Keplerian elements and trajectory calculations</li>
+            <li><strong>Planetary Defense:</strong> Deflection strategy simulations (DART mission)</li>
+        </ul>
+
+        <p style="margin-top: 1rem;"><strong>⚠️ Note:</strong> This simulator uses simplified models for educational clarity. Results should NOT be used for actual planetary defense operations or mission planning.</p>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <div class="footer">
+        <p><strong>🌌 Asteroid Impact Simulator - Meteor Madness</strong></p>
+        <p>NASA Space Apps Challenge 2025</p>
+        <p>Data sources: NASA/JPL-Caltech, USGS | Educational use only</p>
+        <p style="margin-top: 1rem;">
+            <a href="https://meteormadness.earth">Live Demo</a> |
+            <a href="https://github.com/TawbeBaker/Cyber-and-Space">GitHub</a> |
+            <a href="https://github.com/TawbeBaker/Cyber-and-Space/blob/main/LICENSE">License (MIT Educational)</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.875rem;">
+            Version 1.5.0 | October 2025
+        </p>
+    </div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function() {
+            // Fetch the swagger.yaml file
+            fetch('./swagger.yaml')
+                .then(response => response.text())
+                .then(yamlText => {
+                    // Parse YAML to JSON (Swagger UI can handle YAML directly)
+                    window.ui = SwaggerUIBundle({
+                        spec: yamlText,
+                        dom_id: '#swagger-ui',
+                        deepLinking: true,
+                        presets: [
+                            SwaggerUIBundle.presets.apis,
+                            SwaggerUIStandalonePreset
+                        ],
+                        plugins: [
+                            SwaggerUIBundle.plugins.DownloadUrl
+                        ],
+                        layout: "BaseLayout",
+                        defaultModelsExpandDepth: 1,
+                        defaultModelExpandDepth: 1,
+                        docExpansion: "list",
+                        filter: true,
+                        showExtensions: true,
+                        showCommonExtensions: true,
+                        tryItOutEnabled: true
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading Swagger spec:', error);
+                    document.getElementById('swagger-ui').innerHTML =
+                        '<div style="padding: 2rem; text-align: center; color: #d9534f;">' +
+                        '<h3>Error loading API specification</h3>' +
+                        '<p>Please ensure swagger.yaml is in the same directory.</p>' +
+                        '<p>Error: ' + error.message + '</p>' +
+                        '</div>';
+                });
+        }
+    </script>
+</body>
+</html>
